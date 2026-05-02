@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapbook Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Indie+Flower&family=Special+Elite&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-desk: #F5EBDD;        
+            --panel-bg: #EADBC8;       
+            --contrast-bg: #DCCBB3;    
+            
+            --text-primary: #3E2C23;   
+            --text-secondary: #6D4C41; 
+            --text-muted: #A1887F;     
+            
+            /* Accents */
+            --accent-wood: #B08968;    
+            --accent-hover: #7F5539;   
+            --accent-nature: #61bb60;  /* New Primary Action */
+            --accent-rose: #E5989B;    /* Photo/Warm Actions */
+
+            --paper: #ffffff;
+            --shadow-soft: 8px 8px 16px #DCCBB3, -8px -8px 16px #ffffff; 
+            --shadow-inset: inset 4px 4px 8px #DCCBB3, inset -4px -4px 8px #ffffff;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-desk); 
+            margin: 0; 
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 350px;
+            height: 100vh;
+            background: var(--panel-bg);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            z-index: 10;
+            flex-shrink: 0;
+            border-right: 1px solid var(--contrast-bg);
+        }
+
+        .sidebar::-webkit-scrollbar { width: 8px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--contrast-bg); border-radius: 10px; border: 2px solid var(--panel-bg); }
+
+        .logo { font-size: 24px; font-weight: 800; color: var(--accent-hover); letter-spacing: -1px; margin-bottom: 10px; }
+
+        .control-group {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        h3 { color: var(--text-primary); margin-top: 0; }
+
+        input, textarea, select { 
+            width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--contrast-bg); 
+            border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px;
+            background: var(--bg-desk);
+            color: var(--text-primary);
+        }
+
+        input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+        input:focus, textarea:focus, select:focus {
+            box-shadow: var(--shadow-inset);
+            transform: scale(0.99);
+            outline: none;
+            border-color: var(--accent-wood);
+        }
+
+        button { 
+            width: 100%; padding: 12px; border: none; border-radius: 8px; 
+            background: var(--accent-wood); color: white; cursor: pointer; 
+            font-weight: 600; transition: 0.2s;
+        }
+        button:hover { background: var(--accent-hover); }
+        button:active { box-shadow: var(--shadow-inset); transform: scale(0.98); }
+
+        /* WORKSPACE */
+        .workspace {
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-desk);
+        }
+
+        .scrapbook { 
+            width: 900px; height: 650px; padding: 60px; border-radius: 4px; 
+            position: relative; box-shadow: 0 40px 80px rgba(62, 44, 35, 0.15); 
+            z-index: 1;
+            transition: 0.5s;
+            background-color: white;
+            flex-shrink: 0;
+            color: var(--text-primary);
+        }
+
+        /* THEMES - Keeping structure, updating for brown text */
+        .dream { background: linear-gradient(135deg, #fff0f6 0%, #e6e6ff 100%); font-family: 'Dancing Script', cursive; }
+        .midnight {
+            background-color: #c4dfff;
+            background-image: url("https://www.transparenttextures.com/patterns/cartographer.png");
+            background-blend-mode: multiply;
+            background-size: 300px 300px, auto, auto;
+            filter: contrast(1.05), saturate(1.1);
+            color: #fffaf7;
+            font-family: 'Indie Flower', cursive;
+            border: 1px solid rgba(161, 136, 127, 0.2);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        /* Targeting the Header (Wedding Anniversary) */
+        .midnight h2 {
+            color: #11273c !important; /* A deep navy to contrast the blue pattern */
+        }
+
+        /* Targeting the Sub-header (celebration) */
+        .midnight p {
+            color: #fffbf8 !important; /* Keeping this brown or change to #1a2a3a */
+            opacity: 1 !important; /* Ensures it's not too faded */
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3); /* Adds a tiny 'lift' to make it readable */
+            font-size: 1.2rem;
+        }
+        .polaroid { 
+            background: #CCD5AE; 
+            background-image: linear-gradient(rgba(62, 44, 35, 0.05) 1px, transparent 1px), 
+                            linear-gradient(90deg, rgba(62, 44, 35, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px; /* Blueprint/Grid look */
+            color: #3E2C23; 
+            font-family: 'Special Elite', serif; 
+        }
+        .journal { background: #fff; background-image: repeating-linear-gradient(#fff, #fff 31px, #e5e5e5 32px); font-family: 'Special Elite', serif; }
+        .midnight::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-image: linear-gradient(135deg, #F5EBDD 25%, transparent 25%), 
+                            linear-gradient(225deg, #F5EBDD 25%, transparent 25%);
+            background-size: 20px 20px;
+            z-index: 2;
+        }
+        .midnight .slot {
+            border: none;
+            background: #ffffff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 2px 5px 15px rgba(62, 44, 35, 0.1);
+        }
+
+
+
+        .workspace h2 { color: var(--text-primary); }
+        .workspace p { color: var(--text-secondary); }
+
+        .canvas { position: relative; width: 100%; height: 450px; margin-top: 20px; }
+
+        /* SLOTS */
+        .slot { 
+            position: absolute; width: 280px; height: 220px; background: white; 
+            padding: 15px 15px 45px 15px; 
+            box-shadow: 0 10px 30px rgba(62, 44, 35, 0.1); 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .slot:has(.upload-btn) { background: var(--bg-desk); box-shadow: var(--shadow-inset); border: none; }
+        .slot:has(img) { background: white; padding: 12px 12px 40px 12px; box-shadow: 5px 15px 25px rgba(62, 44, 35, 0.2); }
+        .slot:hover { transform: scale(1.08) rotate(0deg) translateY(-10px) !important; z-index: 100; box-shadow: 20px 30px 50px rgba(62, 44, 35, 0.3); }
+        .slot img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .upload-btn { background: rgba(229, 152, 155, 0.05); border: 2px dashed var(--accent-rose); width: 100%; height: 100%; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-rose); cursor: pointer; }
+        .upload-btn:hover { color: #d67a7d; border-color: #d67a7d; background: rgba(229, 152, 155, 0.1); }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(234, 219, 200, 0.8); backdrop-filter: blur(12px);
+            padding: 12px 25px; border-radius: 20px; display: flex; align-items: center;
+            gap: 10px; box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,0.5); z-index: 1000;
+        }
+
+        .btn-icon { width: auto; padding: 10px 15px; background: transparent; color: var(--text-primary); border: 1px solid rgba(62, 44, 35, 0.1); border-radius: 8px; cursor: pointer; }
+        .btn-icon:hover { background: var(--accent-nature); color: white; border-color: var(--accent-nature); }
+
+        #exportMenu { background: var(--bg-desk); color: var(--text-primary); border: 1px solid var(--contrast-bg); }
+
+        .delete-tag { position: absolute; top: -10px; right: -10px; background: var(--accent-rose); color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; z-index: 10; font-size: 14px; }
+        
+        /* LAYOUTS - No structural changes */
+        .layout-1 .slot:nth-child(1) { left: 32%; top: 10%; width: 350px; height: 350px; transform: rotate(-1deg); }
+        .layout-2 .slot:nth-child(1) { left: 5%; top: 20%; transform: rotate(-3deg); }
+        .layout-2 .slot:nth-child(2) { left: 55%; top: 25%; transform: rotate(4deg); }
+        .layout-4 .slot:nth-child(1) { left: 5%; top: 0%; transform: rotate(-2deg); }
+        .layout-4 .slot:nth-child(2) { left: 55%; top: 5%; transform: rotate(2deg); }
+        .layout-4 .slot:nth-child(3) { left: 8%; top: 52%; transform: rotate(1deg); }
+        .layout-4 .slot:nth-child(4) { left: 58%; top: 58%; transform: rotate(-3deg); }
+        .layout-6 .slot:nth-child(1) { width: 220px; height: 160px; left: 5%;  top: 5%;   transform: rotate(-0.2deg); }
+        .layout-6 .slot:nth-child(2) { width: 220px; height: 160px; left: 37%; top: 4%;   transform: rotate(0.3deg); }
+        .layout-6 .slot:nth-child(3) { width: 220px; height: 160px; left: 68%; top: 6%;   transform: rotate(-0.1deg); }
+        .layout-6 .slot:nth-child(4) { width: 220px; height: 160px; left: 7%;  top: 54%;  transform: rotate(0.2deg); }
+        .layout-6 .slot:nth-child(5) { width: 220px; height: 160px; left: 35%; top: 52%;  transform: rotate(-0.3deg); }
+        .layout-6 .slot:nth-child(6) { width: 220px; height: 160px; left: 66%; top: 56%;  transform: rotate(0.1deg); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">Scrapbook Studio ✨</div>
+        <div class="control-group">
+            <h3>1. Global Style</h3>
+            <form method="POST" action="/set_theme">
+                <select name="template">
+                    <option value="dream" {% if scrapbook_theme == 'dream' %}selected{% endif %}>Dreamy Pastel</option>
+                    <option value="midnight" {% if scrapbook_theme == 'midnight' %}selected{% endif %}>The Muse</option>
+                    <option value="polaroid" {% if scrapbook_theme == 'polaroid' %}selected{% endif %}>Green Grid</option>
+                    <option value="journal" {% if scrapbook_theme == 'journal' %}selected{% endif %}>Vintage Journal</option>
+                </select>
+                <button type="submit">Update Studio</button>
+            </form>
+        </div>
+
+        <div class="control-group">
+            <h3>2. Add New Page</h3>
+            <form method="POST">
+                <input name="title" required placeholder="Page Title...">
+                <select name="layout">
+                    <option value="1">1 Large Photo</option>
+                    <option value="2">2 Photos</option>
+                    <option value="4">4 Photos</option>
+                    <option value="6">6 Photo Mosaic</option> <!-- Add this line -->
+                </select>
+                <textarea name="text" required placeholder="Write the memory..." rows="3"></textarea>
+                <button type="submit" style="background: var(--accent-nature); color: #3E2C23;">+ Create Page</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="workspace">
+        {% if pages %}
+            <div class="scrapbook {{ scrapbook_theme }}">
+                <h2 style="font-size: 50px; margin: 0;">{{ pages[current_page].title }}</h2>
+                <p style="font-size: 22px; opacity: 0.8;">{{ pages[current_page].text }}</p>
+                <div class="canvas layout-{{ pages[current_page].layout }}">
+                    {% for img in pages[current_page].slots %}
+                    <div class="slot">
+                        {% if img %}
+                            <img src="{{ url_for('static', filename='uploads/' + img) }}">
+                            <div class="delete-tag" onclick="deleteImage('{{ img }}')">×</div>
+                        {% else %}
+                            <label class="upload-btn">
+                                <input type="file" style="display:none">
+                                <span>⊕ Add Photo</span>
+                                <script>
+                                    document.currentScript.parentElement.querySelector('input').onchange = function() {
+                                        const formData = new FormData();
+                                        formData.append('image', this.files[0]);
+                                        formData.append('slot', "{{ loop.index0 }}");
+                                        fetch('/add_to_slot', { method: 'POST', body: formData }).then(() => location.reload());
+                                    };
+                                </script>
+                            </label>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <a href="/prev"><button class="btn-icon">←</button></a>
+                <span style="font-weight: 700; color: #7f8c8d; min-width: 60px; text-align: center;">{{ current_page + 1 }} / {{ pages|length }}</span>
+                <a href="/next"><button class="btn-icon">→</button></a>
+
+                <div style="width: 1px; height: 25px; background: rgba(0,0,0,0.1); margin: 0 10px;"></div>
+
+                <!-- STANDARD SELECT DROPDOWN -->
+                <select id="exportMenu" style="width: auto; padding: 8px 12px; margin: 0; cursor: pointer; border-radius: 8px; border: 1px solid #ddd;">
+                    <option value="" selected disabled>💾 Export Project...</option>
+                    <option value="/export_pdf">📄 Export as PDF</option>
+                    <option value="/export_mp4">🎬 Generate Video (MP4)</option>
+                </select>
+
+                <div style="width: 1px; height: 25px; background: rgba(0,0,0,0.1); margin: 0 10px;"></div>
+
+                <a href="/reset" onclick="return confirm('Delete everything?')">
+                    <button class="btn-icon" style="color: white; background: var(--accent-rose); border: none;">Reset</button>
+                </a>
+            </div>
+        {% else %}
+            <div style="text-align:center; color: #b2bec3;"><h1>Studio is Empty</h1><p>Add a page in the sidebar.</p></div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Handle Export Change
+        document.getElementById('exportMenu').addEventListener('change', function() {
+            if (this.value) window.location.href = this.value;
+        });
+
+        function deleteImage(file){
+            if(confirm("Remove?")) {
+                fetch("/delete_image", {
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({file})
+                }).then(() => location.reload());
+            }
+        }
+    </script>
+</body>
+</html>
